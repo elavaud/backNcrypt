@@ -51,6 +51,6 @@ fi
 
 # Delete old backups
 if [ $1 != "L1" ]; then
-  /backncrypt/clean.sh $1
+  /backncrypt/clean.sh $1 $FILE_EXTENSION
 fi
 exit 0;
