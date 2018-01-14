@@ -8,3 +8,7 @@ tests/mysql/backups/*
 !tests/mysql/backups/L1/.keep
 !tests/mysql/backups/L2/.keep
 !tests/mysql/backups/L3/.keep
+tests/p7zip/backups/*
+!tests/p7zip/backups/L1/.keep
+!tests/p7zip/backups/L2/.keep
+!tests/p7zip/backups/L3/.keep

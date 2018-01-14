@@ -7,15 +7,25 @@ if /backncrypt/check_variables.sh $1; then
   DATE=$(date +%Y%m%d%H%M)
   echo "$1 BACKUP => STARTED => $DATE"
   
-  # Set files' names
+  # Set files' extension
+  if [ $ENC_TYPE = "openssl" ]; then
+    FILE_EXTENSION=gz.enc
+  elif [ $ENC_TYPE =  "7z" ]; then
+    FILE_EXTENSION=7z
+  else
+    echo "$1 BACKUP => Encrpytion type not understood. Choices are openssl or 7z."
+    exit 1;
+  fi
+
+  # Set files' path
   if [ $1 = "L1" ]; then
-    BACKUP_FILE_PATH=/backups/L1/backup.gz.enc
+    BACKUP_FILE_PATH=/backups/L1/backup.$FILE_EXTENSION
     TMP_FILE_PATH=/tmp/backup
   elif [ $1 = "L2" ]; then
-    BACKUP_FILE_PATH=/backups/L2/$DATE.backup.l2.gz.enc
+    BACKUP_FILE_PATH=/backups/L2/$DATE.backup.l2.$FILE_EXTENSION
     TMP_FILE_PATH=/tmp/$DATE.backup.l2
   else
-    BACKUP_FILE_PATH=/backups/L3/$DATE.backup.l3.gz.enc
+    BACKUP_FILE_PATH=/backups/L3/$DATE.backup.l3.$FILE_EXTENSION
     TMP_FILE_PATH=/tmp/$DATE.backup.l3
   fi
   
