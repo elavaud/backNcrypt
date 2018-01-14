@@ -10,7 +10,7 @@ if [ $DB_BACKEND = "mysql" ]; then
     DUMP_RESULT=true;
   fi
 elif [ $DB_BACKEND == "postgres" ]; then
-  if PGPASSWORD="$DB_PASSWORD" pg_dumpall -h "$DB_HOST" -P "$DB_PORT" -U "$DB_USER" -O -c > "$2.sql"; then
+  if PGPASSWORD="$DB_PASSWORD" pg_dumpall -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -O -c > "$2.sql"; then
     DUMP_RESULT=true;
   fi
 else
