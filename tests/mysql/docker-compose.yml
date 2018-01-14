@@ -5,6 +5,8 @@ services:
       context: ../../
     env_file: .bnc.env
     container_name: backncrypt_test_mysql_bnc
+    volumes:
+      - ./backups:/backups
     command: [sh, -c, "./set.sh"]
   mysql:
     image: mysql:5.7

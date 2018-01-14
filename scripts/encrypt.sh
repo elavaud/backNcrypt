@@ -19,7 +19,7 @@ fi
 rm -rf "$2.sql"
 rm -rf "$2.sql.gz"
 if [ $ENC_RESULT = false ]; then
-  echo "$1 BACKUP => FAILED => Error of during compression/encryption of the SQL dump. Check the variables you provided.";
+  echo "$1 BACKUP => FAILED => Error during compression/encryption of the SQL dump. Check the variables you provided.";
   exit 1;
 fi
 exit 0;

@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  backups:
+    build:
+      context: ../../
+    env_file: .bnc.env
+    container_name: backncrypt_test_postgres_bnc
+    volumes:
+      - ./backups:/backups
+    command: [sh, -c, "./set.sh"]
+  postgres:
+    image: postgres:10.1-alpine
+    container_name: backncrypt_test_postgres_postgres
+    expose:
+      - "5432"
+    env_file: .postgres.env
