@@ -58,6 +58,7 @@ And replace {{container_name}} with the name of the backNcrypt container running
 
 Example using MySQL and OpenSSL. More examples can be found in the folder "tests" of the github repository.
 
+
 **docker-compose.yml:**
 ```yaml
 services:
@@ -66,7 +67,7 @@ services:
     env_file: .bnc.env
     volumes:
       - ./backups:/backups
-    command: [sh, -c, "wait-for -t 5000 mysql:3306 -- set.sh"]
+    command: "./wait-for -t 5000 mysql:3306 -- ./set.sh"
   mysql:
     image: mysql
     expose:
