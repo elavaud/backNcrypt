@@ -15,7 +15,7 @@ Backups are stored in the container in "/backups". There are 3 levels of backup,
 All of these backups have their own schedule using a [CRON expression](https://en.wikipedia.org/wiki/Cron#CRON_expression), and level 2 and 3 have their own maximum of backup files to keep.
 For example, level 1 could be set to every half an hour, level 2 to every day with a max of 30 (1 month), and level 3 every month with a max of 36 (3 years).
 
-# Variables
+## Variables
 A template for the environment variables is included in this github folder "env.template". If a CRON time for a specific level is not specified, the backup will not be executed. The rest of the variables are mandatory.
 * DB_BACKEND: Database engine to use. Choices are or "mysql" or "postgres".
 * DB_HOST: Host of the database to reach.
@@ -29,7 +29,7 @@ A template for the environment variables is included in this github folder "env.
 * CRON_TIME_L3: CRON expression for the level 3 backups.
 * MAX_BACKUPS_L3: Maximum number of level 3 backups to keep.
 
-# Restore
+## Restore
 
 The restore script use the same settings as above. The encryption type, and password should be the same. 
 It can be used through the host as follow:
@@ -38,23 +38,23 @@ It can be used through the host as follow:
 
 And replace {{container_name}} with the name of the backNcrypt container running, and {{backup_file}} by the path in the container of the encrypted backup you want to restore.
 
-# Compose example
+## Compose example
 
 Example using MySQL and OpenSSL. More examples can be found in the folder "tests" of the github repository.
 
 **docker-compose.yml:**
-> services:
-> &nbsp;&nbsp;&nbsp;&nbsp;backups:
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: elavaud/backncrypt:1.0
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env_file: .bnc.env
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumes:
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ./backups:/backups
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;command: [sh, -c, "./set.sh"]
-> &nbsp;&nbsp;&nbsp;&nbsp;mysql:
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: mysql:5.7
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expose:
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "3306"
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env_file: .mysql.env
+*services:*
+*&nbsp;&nbsp;&nbsp;&nbsp;backups:*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: elavaud/backncrypt:1.0*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env_file: .bnc.env*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumes:*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ./backups:/backups*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;command: [sh, -c, "./set.sh"]*
+*&nbsp;&nbsp;&nbsp;&nbsp;mysql:*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: mysql:5.7*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expose:*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "3306"*
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env_file: .mysql.env*
 
 **.bnc.env:**
 > DB_BACKEND=mysql
