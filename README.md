@@ -1,5 +1,5 @@
 # backNcrypt
-![Alpine 3.7](https://img.shields.io/badge/Alpine-3.7-brightgreen.svg)
+[![Alpine 3.7](https://img.shields.io/badge/Alpine-3.7-brightgreen.svg)](https://hub.docker.com/_/alpine/) [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/elavaud/backNcrypt/blob/master/LICENSE) [![Github elavaud](https://img.shields.io/badge/Github-elavaud-red.svg)](https://github.com/elavaud/backNcrypt) [![Docker elavaud](https://img.shields.io/badge/Docker-elavaud-lightgrey.svg)](https://hub.docker.com/r/elavaud/backncrypt/)
 
 Docker alpine image for CRON SQL dumps, encryption and restore.
 Database engine: PostreSQL or MySQL
