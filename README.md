@@ -1,12 +1,13 @@
 ## backNcrypt
-[Github](https://github.com/elavaud/backNcrypt) 
+![Alpine 3.7](https://hub.docker.com/_/alpine/)
+
 Docker alpine image for CRON SQL dumps, encryption and restore.
 Database engine: PostreSQL or MySQL
 Encryption type: OpenSSL with Gunzip, or 7z alone
 
 # Backups 
 
-Backups are stored in the container in "/backups". There are 3 levels of backup, each of them stored in their respective directory "L#"(e.g.: /backups/L1).
+Backups are stored in the container in "/backups". There are 3 levels of backup, each of them stored in their respective directory "L#" (e.g.: /backups/L1).
 * L1: Overwrite. No history is kept on this backup. File named "backup" + extension
 * L2: History backup. Old ones are deleted as and when new ones arrive. File beginning by the date/time of the backup (YYYYMMDDHHMM), then the level, "backup" + extension (e.g.: 201801122355.l2.backup.gz.enc)
 * L3: History backup. Old ones are deleted as and when new ones arrive. File beginning by the date/time of the backup (YYYYMMDDHHMM), then the level, "backup" + extension (e.g.: 201712012355.l3.backup.7z)
