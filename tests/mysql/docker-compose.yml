@@ -1,16 +1,13 @@
 version: "3.3"
 services:
   backups:
-    build:
-      context: ../../
+    image: elavaud/backncrypt
     env_file: .bnc.env
-    container_name: backncrypt_test_mysql_bnc
     volumes:
       - ./backups:/backups
-    command: [sh, -c, "./set.sh"]
+    command: "./wait-for -t 5000 mysql:3306 -- ./set.sh"
   mysql:
     image: mysql:5.7
-    container_name: backncrypt_test_mysql_mysql
     expose:
       - "3306"
     volumes:
