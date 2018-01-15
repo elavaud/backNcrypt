@@ -43,9 +43,9 @@ And replace {{container_name}} with the name of the backNcrypt container running
 Example using MySQL and OpenSSL. More examples can be found in the folder "tests" of the github repository.
 
 **docker-compose.yml:**
-`services:`
-`&nbsp;&nbsp;&nbsp;&nbsp;backups:`
-`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: elavaud/backncrypt:1.0`
+    services:
+        backups:
+            image: elavaud/backncrypt:1.0
 `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env_file: .bnc.env`
 `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumes:`
 `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ./backups:/backups`
