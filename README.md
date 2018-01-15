@@ -5,7 +5,7 @@ Docker alpine image for CRON SQL dumps, encryption and restore.
 Database engine: PostreSQL or MySQL
 Encryption type: OpenSSL with Gunzip, or 7z alone
 
-#### Backups 
+## Backups 
 
 Backups are stored in the container in "/backups". There are 3 levels of backup, each of them stored in their respective directory "L#" (e.g.: /backups/L1).
 * L1: Overwrite. No history is kept on this backup. File named "backup" + extension
