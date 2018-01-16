@@ -50,7 +50,7 @@ This script will use the environment variables provided to create the cron jobs 
 The restore script use the same settings as above: the encryption type, password, database settings should be the same.  
 It can be used through the host as follow:
 
-    docker exec {{container_name}} restore.sh {{backup_file}} 
+    docker exec {{container_name}} ./restore.sh {{backup_file}} 
 
 And replace {{container_name}} with the name of the backNcrypt container running, and {{backup_file}} by the path in the container of the encrypted backup you want to restore.
 
