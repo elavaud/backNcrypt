@@ -7,10 +7,14 @@ services:
     container_name: backncrypt_test_postgres_bnc
     volumes:
       - ./backups:/backups
-    command: [sh, -c, "./set.sh"]
+    command: [bash, -c, "./set.sh"]
   postgres:
     image: postgres:10.1-alpine
     container_name: backncrypt_test_postgres_postgres
     expose:
       - "5432"
     env_file: .postgres.env
+    volumes:
+      - type: bind
+        source: ./db_data
+        target: /var/lib/postgresql/data

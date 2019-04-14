@@ -2,7 +2,7 @@
 [![Alpine 3.7](https://img.shields.io/badge/Alpine-3.7-brightgreen.svg)](https://hub.docker.com/_/alpine/) [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/elavaud/backNcrypt/blob/master/LICENSE) [![Github elavaud](https://img.shields.io/badge/Github-elavaud-red.svg)](https://github.com/elavaud/backNcrypt) [![Docker elavaud](https://img.shields.io/badge/Docker-elavaud-lightgrey.svg)](https://hub.docker.com/r/elavaud/backncrypt/)  
 Docker alpine image for CRON SQL dumps, encryption and restore.  
 Database engine: PostreSQL or MySQL  
-Encryption type: OpenSSL with Gunzip, or 7z alone  
+Encryption type: OpenSSL + Gzip, or 7zip (recommended for Windows users)
 
 ### Backups 
 
@@ -16,32 +16,36 @@ For example, level 1 could be set to every half an hour, level 2 to every day wi
 
 File name pattern:  
 The L1 backup is simply called "backup" followed by the extension (or ".gz.enc" or "7z").  
-L2 and L3 backups begin by the date/time of the backup (YYYYMMDDHHMM), then the level, "backup" and the extension (e.g.: 201801122355.l2.backup.gz.enc for a level 2 backup made the 12 January 2018 at 23:55, and encrypted using openssl)
+L2 and L3 backups begin by the date/time of the backup , then the level, "backup" and the extension (e.g.: 201801122355.l2.backup.gz.enc for a level 2 backup made the 12 January 2018 at 23:55, and encrypted using openssl)
 
 ### Variables
 
-A template for the environment variables is included in this github folder "env.template". If a CRON time for a specific level is not specified, the backup will not be executed. The rest of the variables are mandatory.
-* DB_BACKEND: Database engine to use. Choices are or "mysql" or "postgres".
-* DB_HOST: Host of the database to reach.
-* DB_USER: User of the database to reach.
-* DB_PASSWORD: Password of the database to reach.
-* ENC_TYPE: Encryption type to use. Choices are or "openssl" or "7z".
-* ENC_PASS: Encryption pass to use.
-* CRON_TIME_L1: CRON expression for the level 1 backups.
-* CRON_TIME_L2: CRON expression for the level 2 backups.
-* MAX_BACKUPS_L2: Maximum number of level 2 backups to keep.
-* CRON_TIME_L3: CRON expression for the level 3 backups.
-* MAX_BACKUPS_L3: Maximum number of level 3 backups to keep.
+A template for the environment variables is included in this github folder "env.template". If a CRON time for a specific level is not specified, the backup will not be executed. 
+* BACKUP_NAME: mandatory - folder name where the backups are stored
+* DB_BACKEND: Database engine to use. Choices are or "mysql" or "postgres". default to postgres
+* DB_HOST: Host (or docker-compose service) of the database to reach. default to database 
+* DB_DB: specific database to backup. default to all databases
+* DB_USER: User of the database to reach. default to POSTGRES_USER or postgres
+* DB_PASSWORD: Password of the database to reach. Mandatory
+* DUMP_ARGS: extra options passed to the pg_dump program (postgres only for now) default to -c -O 
+(e.g. for DHIS2 use -c -O -T aggregated\* -T analytics* -T completeness\* )
+* ENC_TYPE: Encryption type to use. Choices are or "openssl" or "7z". default to 7z
+* ENC_PASS: Encryption pass to use. Mandatory
+* CRON_TIME_L1: CRON expression for the level 1 backups. 
+* CRON_TIME_L2: CRON expression for the level 2 backups. 
+* MAX_BACKUPS_L2: Maximum number of level 2 backups to keep. Mandatory if CRON_TIME_L2 is defined
+* CRON_TIME_L3: CRON expression for the level 3 backups. 
+* MAX_BACKUPS_L3: Maximum number of level 3 backups to keep. Mandatory if CRON_TIME_L3 is defined
+* DATE_FMT: date format for the backup prefix file. default to  +%Y_%b_%d__%Hh%M (2018_Dec_19__23h16)
+* TZ: [time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). default to Europe/Brussels 
+* REMOTE: to duplicate the backup folder via rsync on a remote server e.g. dhis2@192.168.123.150:/volume1/backups/DHIS2/ - where /volume1/backups/DHIS2/ is the root folder in the remote server -do not forget the trailing slash-, the backups will be stored in /volume1/backups/DHIS2/${BACKUP_NAME}/
+* REMOTE_PASS: the password used to authenticate rsync on the remote server
+* REMOTE_OPTIONS: extra rsync options (e.g. --delete --exclude 'old_backups')
+* REMOTE2 : same options as for REMOTE for a tertiary backup
 
 ### Use
 
-Three main functionalities are available. The corresponding scripts are located in "/backncrypt" as is the work directory.  
-
-**wait-for**  
-This script is coming from [eficode](https://github.com/eficode/wait-for) and is used to wait for another service to become available.  
-It is sh and alpine compatible and was inspired by [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it).
-
-    ./wait-for host:port [-t timeout] [-- command args]
+Two main functionalities are available. The corresponding scripts are located in "/backncrypt" as is the work directory. 
 
 **set.sh**  
 This script will use the environment variables provided to create the cron jobs and activate them. 
@@ -54,47 +58,5 @@ It can be used through the host as follow:
 
 And replace {{container_name}} with the name of the backNcrypt container running, and {{backup_file}} by the path in the container of the encrypted backup you want to restore.
 
-### Compose example
-
-Example using MySQL and OpenSSL. More examples can be found in the folder "tests" of the github repository.
-
-
-**docker-compose.yml:**
-```yaml
-services:
-  backups:
-    image: elavaud/backncrypt
-    env_file: .bnc.env
-    volumes:
-      - ./backups:/backups
-    command: "./wait-for -t 5000 mysql:3306 -- ./set.sh"
-  mysql:
-    image: mysql
-    expose:
-      - "3306"
-    env_file: .mysql.env
-```
-
-
-**.bnc.env:**
-```
-DB_BACKEND=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_USER=user
-DB_PASSWORD=password
-ENC_TYPE=openssl
-ENC_PASS=opensslpass
-CRON_TIME_L1=*/30 * * * *
-CRON_TIME_L2=55 23 * * *
-MAX_BACKUPS_L2=30
-CRON_TIME_L3=0 0 1 * *
-MAX_BACKUPS_L3=36
-```
-
-**.mysql.env:**
-```
-MYSQL_USER=user
-MYSQL_PASSWORD=password
-MYSQL_ROOT_PASSWORD=password
-```
+### Integration
+Add it to your docker-compose stack - you can pass the env variables in .env.
